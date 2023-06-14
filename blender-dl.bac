@@ -1,11 +1,13 @@
 #!/bin/bash
 # dependency: axel, wget, fzf.
-
 blender_downloads_dir="${HOME}/blender"
-nc=6 # number of connections
 
-blender-dl-alpha(){
-    # download
+alpha_update(){
+    nc=6 # number of connections
+    # dependency check and blender download
+    fzf --version > /dev/null 2>&1 || echo "missing dependency: fzf - command-line fuzzy finder."
+    axel -V > /dev/null 2>&1 || echo "missing dependency: axel - light command line download accelerator"
+    wget --version > /dev/null 2>&1 || echo "missing dependency: wget - the non-interactive network downloader."
     ls -l "$blender_downloads_dir/alpha/" > /dev/null 2>&1 || mkdir -p "$blender_downloads_dir/alpha/"
     rm -r "$blender_downloads_dir/alpha/"* > /dev/null 2>&1
     cd "$blender_downloads_dir/alpha/"
@@ -30,14 +32,21 @@ blender-dl-alpha(){
     cp "$bl_path.desktop" ~/.local/share/applications/blender-dl-alpha.desktop
 }
 
-blender-dl(){
-    # download
+blender_update(){
+    nc=6 # number of connections
+    # dependency check and blender download
+    fzf --version > /dev/null 2>&1 || echo "missing dependency: fzf - command-line fuzzy finder."
+    axel -V > /dev/null 2>&1 || echo "missing dependency: axel - light command line download accelerator"
+    wget --version > /dev/null 2>&1 || echo "missing dependency: wget - the non-interactive network downloader."
     ls -l "$blender_downloads_dir/blender/" > /dev/null 2>&1 || mkdir -p "$blender_downloads_dir/blender/"
     rm -r "$blender_downloads_dir/blender/"* > /dev/null 2>&1
     cd "$blender_downloads_dir/blender/"
     ver=$(wget -qO- https://ftp.halifax.rwth-aachen.de/blender/release/ |  grep -o -G 'Blender[0-9].[0-9]' | tail -1)
     ver2=$(wget -qO- https://ftp.halifax.rwth-aachen.de/blender/release/$ver |  grep -o -G 'blender-[0-9].[0-9].[0-9]-linux-x64.tar.xz' | tail -1)
     axel -n $nc https://ftp.halifax.rwth-aachen.de/blender/release/$ver/$ver2
+    # sha256sum check
+    # axel -n $nc https://ftp.halifax.rwth-aachen.de/blender/release/$ver/*.sha256
+    # sha256sum -c *.sha256 | grep OK || echo "sha256sum corrupt!" > log_sha
     # blender extract
     tar -xf "$blender_downloads_dir/blender/"*.tar.xz -C "$blender_downloads_dir/blender"
     # icon
@@ -53,5 +62,5 @@ blender-dl(){
     cp "$bl_path.desktop" ~/.local/share/applications/blender-dl.desktop
 }
 
-run="$(echo -e "blender-dl-alpha\nblender-dl" | fzf )"
+run="$(echo -e "alpha_update\nblender_update" | fzf )"
 $run
