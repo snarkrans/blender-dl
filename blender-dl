@@ -28,7 +28,8 @@ alpha_update(){
     echo "Exec=$bl_path" %f >> $bl_path.desktop
     echo "Icon=$bl_path.svg" >> $bl_path.desktop
     echo "Name=blender-dl-alpha" >> $bl_path.desktop
-    cp -p "$bl_path.desktop" ~/.local/share/applications/blender-dl-alpha.desktop
+    ls -l ~/.local/share/applications > /dev/null 2>&1 || mkdir -p ~/.local/share/applications
+    cp "$bl_path.desktop" ~/.local/share/applications/blender-dl-alpha.desktop
 }
 
 blender_update(){
@@ -57,7 +58,8 @@ blender_update(){
     echo "Exec=$bl_path" %f >> $bl_path.desktop
     echo "Icon=$bl_path.svg" >> $bl_path.desktop
     echo "Name=blender-dl" >> $bl_path.desktop
-    cp -p "$bl_path.desktop" ~/.local/share/applications/blender-dl.desktop
+    ls -l ~/.local/share/applications > /dev/null 2>&1 || mkdir -p ~/.local/share/applications
+    cp "$bl_path.desktop" ~/.local/share/applications/blender-dl.desktop
 }
 
 run="$(echo -e "alpha_update\nblender_update" | fzf )"
